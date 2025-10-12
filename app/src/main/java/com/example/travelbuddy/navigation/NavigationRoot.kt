@@ -8,6 +8,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.example.travelbuddy.ui.screens.home.HomeScreen
 import com.example.travelbuddy.ui.screens.login.LoginScreen
+import com.example.travelbuddy.ui.screens.traveldetails.TravelDetailsScreen
+import com.example.travelbuddy.ui.screens.travelform.TravelFormScreen
 
 @Composable
 fun NavigationRoot(
@@ -24,13 +26,36 @@ fun NavigationRoot(
     ) { key ->
         when (key) {
             is HomeRoute -> {
-                NavEntry(key = key) {
-                    HomeScreen()
+                NavEntry(key) {
+                    HomeScreen(
+                        pushToDetailsScreen = {
+                            backStack.add(TravelDetailsRoute(id = it))
+                        },
+                        pushToFormScreen = {
+                            backStack.add(TravelFormRoute)
+                        }
+                    )
+                }
+            }
+
+            is TravelDetailsRoute -> {
+                NavEntry(key) {
+                    TravelDetailsScreen(
+                        popToPreviousScreen = backStack::removeLastOrNull,
+                    )
+                }
+            }
+
+            is TravelFormRoute -> {
+                NavEntry(key) {
+                    TravelFormScreen(
+                        popToPreviousScreen = backStack::removeLastOrNull,
+                    )
                 }
             }
 
             is LoginRoute -> {
-                NavEntry(key = key) {
+                NavEntry(key) {
                     LoginScreen()
                 }
             }

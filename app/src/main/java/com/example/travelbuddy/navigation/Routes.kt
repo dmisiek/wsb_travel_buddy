@@ -4,7 +4,13 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object LoginRoute: NavKey
+data object HomeRoute : NavKey
 
 @Serializable
-data object HomeRoute: NavKey
+data class TravelDetailsRoute(val id: Int) : NavKey
+
+@Serializable
+data object TravelFormRoute : NavKey
+
+@Serializable
+data object LoginRoute : NavKey

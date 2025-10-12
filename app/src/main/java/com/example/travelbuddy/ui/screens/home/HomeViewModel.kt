@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 data class HomeState(
-    val travels: List<Int> = (1..20).toList(),
+    val exploreTravels: List<Int> = (1..20).toList(),
+    val userTravels: List<Int> = (1..5).toList(),
 )
 
 class HomeViewModel : ViewModel() {
-
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()
 
