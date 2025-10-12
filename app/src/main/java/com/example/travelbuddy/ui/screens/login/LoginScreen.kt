@@ -13,18 +13,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = LoginViewModel(),
+    viewModel: LoginViewModel = koinViewModel(),
 ) {
-    val state = viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold { padding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,7 +42,7 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
             TextField(
-                value = state.value.login,
+                value = state.login,
                 onValueChange = viewModel::loginChanged,
                 label = {
                     Text("Login")
@@ -47,7 +50,7 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
             TextField(
-                value = state.value.password,
+                value = state.password,
                 onValueChange = viewModel::passwordChanged,
                 label = {
                     Text("Hasło")
