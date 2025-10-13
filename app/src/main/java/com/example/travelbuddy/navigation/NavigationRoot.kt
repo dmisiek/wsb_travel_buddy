@@ -59,7 +59,9 @@ fun NavigationRoot(
 
             is LoginRoute -> {
                 NavEntry(key) {
-                    LoginScreen()
+                    LoginScreen(
+                        popToPreviousScreen = backStack::removeLastOrNull,
+                    )
                 }
             }
 
