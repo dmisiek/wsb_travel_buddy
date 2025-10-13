@@ -37,6 +37,7 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    pushToLoginScreen: () -> Unit,
     pushToDetailsScreen: (Int) -> Unit,
     pushToFormScreen: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
@@ -50,7 +51,7 @@ fun HomeScreen(
                     Text("Home")
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(pushToLoginScreen) {
                         Icon(
                             imageVector = Icons.Outlined.AccountCircle,
                             contentDescription = "",

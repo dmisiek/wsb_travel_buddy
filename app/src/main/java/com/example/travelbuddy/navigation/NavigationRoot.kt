@@ -28,6 +28,9 @@ fun NavigationRoot(
             is HomeRoute -> {
                 NavEntry(key) {
                     HomeScreen(
+                        pushToLoginScreen = {
+                            backStack.add(LoginRoute)
+                        },
                         pushToDetailsScreen = {
                             backStack.add(TravelDetailsRoute(id = it))
                         },
