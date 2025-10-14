@@ -1,11 +1,13 @@
 package com.example.travelbuddy.data.travels.models
 
 import com.example.travelbuddy.domain.travels.models.Travel
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentId
 
 data class NetworkTravel(
-    override val id: String,
-    override val name: String,
-    override val photos: List<NetworkTravelPhoto>,
-    override val isPublic: Boolean,
-    override val createdAt: String,
+    @DocumentId override val id: String = "",
+    override val name: String = "",
+    override val photos: List<NetworkTravelPhoto> = emptyList(),
+    override val isPublic: Boolean = true,
+    override val createdAt: Timestamp = Timestamp.now(),
 ) : Travel

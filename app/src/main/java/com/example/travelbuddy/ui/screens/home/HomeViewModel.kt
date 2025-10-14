@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.travelbuddy.data.auth.repositories.AuthRepository
 import com.example.travelbuddy.data.travels.repositories.TravelRepository
+import com.example.travelbuddy.domain.travels.models.Travel
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,8 +15,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class HomeState(
-    val exploreTravels: List<Int> = (1..20).toList(),
-    val userTravels: List<Int> = (1..5).toList(),
+    val exploreTravels: List<Travel> = emptyList(),
+    val userTravels: List<Travel> = emptyList(),
 )
 
 class HomeViewModel(
@@ -31,6 +32,18 @@ class HomeViewModel(
             started = SharingStarted.Eagerly,
             initialValue = authRepository.getUser()
         )
+
+    init {
+        viewModelScope.launch {
+            try {
+                val travelsPage = travelRepository.getExplorePage(1)
+
+                _state.update { it.copy(exploreTravels = travelsPage.data) }
+            } catch (e: Exception) {
+                print(e) // todo handle
+            }
+        }
+    }
 
     fun logout() {
         viewModelScope.launch {

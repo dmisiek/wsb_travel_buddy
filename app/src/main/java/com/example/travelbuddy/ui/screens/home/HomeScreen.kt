@@ -48,7 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     pushToLoginScreen: () -> Unit,
     pushToRegisterScreen: () -> Unit,
-    pushToDetailsScreen: (Int) -> Unit,
+    pushToDetailsScreen: (String) -> Unit,
     pushToFormScreen: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
@@ -157,7 +157,7 @@ fun HomeScreen(
                     items(state.userTravels) { travel ->
                         TravelCell(
                             travel,
-                            modifier = Modifier.clickable(onClick = { pushToDetailsScreen(travel) }),
+                            modifier = Modifier.clickable(onClick = { pushToDetailsScreen(travel.id) }),
                         )
                     }
 

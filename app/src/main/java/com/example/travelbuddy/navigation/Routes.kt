@@ -13,7 +13,7 @@ data object LoginRoute : NavKey
 data object RegisterRoute : NavKey
 
 @Serializable
-data class TravelDetailsRoute(val id: Int) : NavKey
+data class TravelDetailsRoute(val id: String) : NavKey
 
 @Serializable
 data object TravelFormRoute : NavKey

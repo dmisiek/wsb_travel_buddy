@@ -12,10 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.example.travelbuddy.domain.travels.models.Travel
 
 @Composable
 fun TravelCell(
-    value: Int, // todo: type of Travel
+    value: Travel,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -26,6 +27,6 @@ fun TravelCell(
             .clip(RoundedCornerShape(4.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
-        Text(value.toString())
+        Text(value.name)
     }
 }
