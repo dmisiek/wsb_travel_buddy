@@ -21,7 +21,9 @@ class TravelRepositoryImpl(
     }
 
     override suspend fun get(id: String): Travel {
-        TODO("Not yet implemented")
+        val collection = firestore.collection(COLLECTION_KEY)
+        val response = collection.document(id).get().await()
+        return response.toObject(NetworkTravel::class.java)!!
     }
 
     override suspend fun create(travel: Travel) {

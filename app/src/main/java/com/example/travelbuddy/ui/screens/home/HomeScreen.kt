@@ -157,7 +157,8 @@ fun HomeScreen(
                     items(state.userTravels) { travel ->
                         TravelCell(
                             travel,
-                            modifier = Modifier.clickable(onClick = { pushToDetailsScreen(travel.id) }),
+                            modifier = Modifier
+                                .clickable(onClick = { pushToDetailsScreen(travel.id) }),
                         )
                     }
 
@@ -182,7 +183,11 @@ fun HomeScreen(
                 }
 
                 items(state.exploreTravels) { travel ->
-                    TravelCell(travel)
+                    TravelCell(
+                        travel,
+                        modifier = Modifier
+                            .clickable(onClick = { pushToDetailsScreen(travel.id) }),
+                    )
                 }
             }
         }

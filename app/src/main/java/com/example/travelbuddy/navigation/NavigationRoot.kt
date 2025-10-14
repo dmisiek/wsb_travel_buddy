@@ -11,6 +11,8 @@ import com.example.travelbuddy.ui.screens.login.LoginScreen
 import com.example.travelbuddy.ui.screens.register.RegisterScreen
 import com.example.travelbuddy.ui.screens.traveldetails.TravelDetailsScreen
 import com.example.travelbuddy.ui.screens.travelform.TravelFormScreen
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun NavigationRoot(
@@ -57,6 +59,9 @@ fun NavigationRoot(
                 NavEntry(key) {
                     TravelDetailsScreen(
                         popToPreviousScreen = backStack::removeLastOrNull,
+                        viewModel = koinViewModel {
+                            parametersOf(key.id)
+                        }
                     )
                 }
             }
