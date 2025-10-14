@@ -1,4 +1,4 @@
-package com.example.travelbuddy.ui.screens.login
+package com.example.travelbuddy.ui.screens.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,32 +12,36 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class LoginState(
+data class RegisterState(
     val email: String = "",
     val password: String = "",
+    val passwordRepeat: String = "",
     val isPending: Boolean = false,
 )
 
-class LoginViewModel(
+class RegisterViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(LoginState())
-    val state: StateFlow<LoginState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(RegisterState())
+    val state: StateFlow<RegisterState> = _state.asStateFlow()
 
-    val isLoggedIn: StateFlow<Boolean> = authRepository.userFlow
-        .map { it != null }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = authRepository.getUser() != null
-        )
+    val isLoggedIn: StateFlow<Boolean> = authRepository.userFlow.map { it != null }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = authRepository.getUser() != null
+    )
 
     fun loginChanged(value: String) {
         _state.update { state -> state.copy(email = value) }
     }
 
+
     fun passwordChanged(value: String) {
         _state.update { state -> state.copy(password = value) }
+    }
+
+    fun passwordRepatChanged(value: String) {
+        _state.update { state -> state.copy(passwordRepeat = value) }
     }
 
     fun submit() {
@@ -48,11 +52,11 @@ class LoginViewModel(
 
         viewModelScope.launch {
             try {
-                authRepository.login(
+                authRepository.register(
                     state.email,
                     state.password,
                 )
-                _state.update { LoginState() }
+                _state.update { RegisterState() }
             } catch (e: Exception) {
                 print(e) // todo handle
             } finally {
@@ -62,6 +66,7 @@ class LoginViewModel(
     }
 }
 
-private fun LoginState.isValid(): Boolean {
-    return email.isNotBlank() && password.isNotBlank()
+private fun RegisterState.isValid(): Boolean {
+    return email.isNotBlank() && password.isNotBlank() && passwordRepeat.isNotBlank()
+            && password == passwordRepeat
 }

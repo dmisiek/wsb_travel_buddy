@@ -28,6 +28,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -46,6 +47,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     pushToLoginScreen: () -> Unit,
+    pushToRegisterScreen: () -> Unit,
     pushToDetailsScreen: (Int) -> Unit,
     pushToFormScreen: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
@@ -67,12 +69,23 @@ fun HomeScreen(
                 )
                 if (user != null) AccountTile(user = user!!)
                 Spacer(modifier = Modifier.weight(1f))
+                if (user == null) TextButton(
+                    pushToRegisterScreen,
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth()
+                        .height(48.dp),
+                ) {
+                    Text("Stwórz konto")
+                }
                 Button(
                     onClick = if (user != null) viewModel::logout else pushToLoginScreen,
                     modifier = Modifier
-                        .padding(32.dp)
+                        .padding(horizontal = 32.dp)
+                        .padding(bottom = 32.dp)
                         .fillMaxWidth()
-                        .height(52.dp),
+                        .height(48.dp),
                 ) {
                     Text(if (user != null) "Wyloguj" else "Zaloguj")
                 }

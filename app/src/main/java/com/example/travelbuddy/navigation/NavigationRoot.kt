@@ -8,6 +8,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.example.travelbuddy.ui.screens.home.HomeScreen
 import com.example.travelbuddy.ui.screens.login.LoginScreen
+import com.example.travelbuddy.ui.screens.register.RegisterScreen
 import com.example.travelbuddy.ui.screens.traveldetails.TravelDetailsScreen
 import com.example.travelbuddy.ui.screens.travelform.TravelFormScreen
 
@@ -28,15 +29,26 @@ fun NavigationRoot(
             is HomeRoute -> {
                 NavEntry(key) {
                     HomeScreen(
-                        pushToLoginScreen = {
-                            backStack.add(LoginRoute)
-                        },
-                        pushToDetailsScreen = {
-                            backStack.add(TravelDetailsRoute(id = it))
-                        },
-                        pushToFormScreen = {
-                            backStack.add(TravelFormRoute)
-                        }
+                        pushToLoginScreen = { backStack.add(LoginRoute) },
+                        pushToRegisterScreen = { backStack.add(RegisterRoute) },
+                        pushToDetailsScreen = { backStack.add(TravelDetailsRoute(id = it)) },
+                        pushToFormScreen = { backStack.add(TravelFormRoute) }
+                    )
+                }
+            }
+
+            is LoginRoute -> {
+                NavEntry(key) {
+                    LoginScreen(
+                        popToPreviousScreen = backStack::removeLastOrNull,
+                    )
+                }
+            }
+
+            is RegisterRoute -> {
+                NavEntry(key) {
+                    RegisterScreen(
+                        popToPreviousScreen = backStack::removeLastOrNull
                     )
                 }
             }
@@ -52,14 +64,6 @@ fun NavigationRoot(
             is TravelFormRoute -> {
                 NavEntry(key) {
                     TravelFormScreen(
-                        popToPreviousScreen = backStack::removeLastOrNull,
-                    )
-                }
-            }
-
-            is LoginRoute -> {
-                NavEntry(key) {
-                    LoginScreen(
                         popToPreviousScreen = backStack::removeLastOrNull,
                     )
                 }

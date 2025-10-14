@@ -4,6 +4,7 @@ import com.example.travelbuddy.data.auth.repositories.AuthRepository
 import com.example.travelbuddy.data.auth.repositories.AuthRepositoryImpl
 import com.example.travelbuddy.ui.screens.home.HomeViewModel
 import com.example.travelbuddy.ui.screens.login.LoginViewModel
+import com.example.travelbuddy.ui.screens.register.RegisterViewModel
 import com.example.travelbuddy.ui.screens.traveldetails.TravelDetailsViewModel
 import com.example.travelbuddy.ui.screens.travelform.TravelFormViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -15,7 +16,8 @@ val appModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
 
     viewModelOf(::HomeViewModel)
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::RegisterViewModel)
     viewModelOf(::TravelDetailsViewModel)
     viewModelOf(::TravelFormViewModel)
-    viewModelOf(::LoginViewModel)
 }

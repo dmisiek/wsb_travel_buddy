@@ -1,4 +1,4 @@
-package com.example.travelbuddy.ui.screens.login
+package com.example.travelbuddy.ui.screens.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,9 +30,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     popToPreviousScreen: () -> Unit,
-    viewModel: LoginViewModel = koinViewModel(),
+    viewModel: RegisterViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
@@ -45,7 +45,7 @@ fun LoginScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text("Logowanie")
+                    Text("Rejestracja")
                 },
                 navigationIcon = {
                     BackButton(popToPreviousScreen)
@@ -92,6 +92,20 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
             )
+            Spacer(modifier = Modifier.height(12.dp))
+            TextField(
+                value = state.passwordRepeat,
+                onValueChange = viewModel::passwordRepatChanged,
+                enabled = !state.isPending,
+                label = {
+                    Text("Powtórz hasło")
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password
+                ),
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+            )
             Spacer(modifier = Modifier.height(32.dp))
             if (state.isPending) {
                 CircularProgressIndicator()
@@ -102,7 +116,7 @@ fun LoginScreen(
                         .fillMaxWidth()
                         .height(52.dp),
                 ) {
-                    Text("Zaloguj się")
+                    Text("Stwórz konto")
                 }
             }
             Spacer(modifier = Modifier.height(128.dp))

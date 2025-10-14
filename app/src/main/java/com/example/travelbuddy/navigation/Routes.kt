@@ -7,10 +7,13 @@ import kotlinx.serialization.Serializable
 data object HomeRoute : NavKey
 
 @Serializable
+data object LoginRoute : NavKey
+
+@Serializable
+data object RegisterRoute : NavKey
+
+@Serializable
 data class TravelDetailsRoute(val id: Int) : NavKey
 
 @Serializable
 data object TravelFormRoute : NavKey
-
-@Serializable
-data object LoginRoute : NavKey
