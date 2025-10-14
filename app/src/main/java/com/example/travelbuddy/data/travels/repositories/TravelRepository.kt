@@ -8,5 +8,11 @@ interface TravelRepository {
 
     suspend fun getUserPage(page: Int): List<Page<Travel>>
 
-    suspend fun get(id: Int): Travel
+    suspend fun get(id: String): Travel
+
+    suspend fun create(travel: Travel)
+
+    suspend fun update(id: String, travel: Travel)
+
+    suspend fun delete(id: String)
 }

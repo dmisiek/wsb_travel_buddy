@@ -3,6 +3,7 @@ package com.example.travelbuddy.ui.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.travelbuddy.data.auth.repositories.AuthRepository
+import com.example.travelbuddy.data.travels.repositories.TravelRepository
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,6 +20,7 @@ data class HomeState(
 
 class HomeViewModel(
     private val authRepository: AuthRepository,
+    private val travelRepository: TravelRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()
