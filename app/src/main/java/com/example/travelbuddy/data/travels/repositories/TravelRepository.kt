@@ -1,6 +1,7 @@
 package com.example.travelbuddy.data.travels.repositories
 
 import com.example.travelbuddy.core.models.Page
+import com.example.travelbuddy.domain.travels.dto.TravelDto
 import com.example.travelbuddy.domain.travels.models.Travel
 
 interface TravelRepository {
@@ -10,9 +11,9 @@ interface TravelRepository {
 
     suspend fun get(id: String): Travel
 
-    suspend fun create(travel: Travel)
+    suspend fun create(dto: TravelDto)
 
-    suspend fun update(id: String, travel: Travel)
+    suspend fun update(id: String, dto: TravelDto)
 
     suspend fun delete(id: String)
 }
