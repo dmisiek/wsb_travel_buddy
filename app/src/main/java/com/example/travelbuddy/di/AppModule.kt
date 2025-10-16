@@ -21,7 +21,7 @@ val appModule = module {
     single { FirebaseStorage.getInstance() }
 
     single<AuthRepository> { AuthRepositoryImpl(get()) }
-    single<TravelRepository> { FirebaseTravelRepository(get()) }
+    single<TravelRepository> { FirebaseTravelRepository(get(), get(), get()) }
 
     viewModelOf(::HomeViewModel)
     viewModelOf(::LoginViewModel)

@@ -2,6 +2,7 @@ package com.example.travelbuddy.data.travels.repositories
 
 import com.example.travelbuddy.core.models.Page
 import com.example.travelbuddy.data.auth.repositories.AuthRepository
+import com.example.travelbuddy.data.travels.mappers.toDomain
 import com.example.travelbuddy.data.travels.models.NetworkTravel
 import com.example.travelbuddy.domain.travels.dto.TravelDto
 import com.example.travelbuddy.domain.travels.models.Travel
@@ -14,21 +15,36 @@ class FirebaseTravelRepository(
     private val db: FirebaseFirestore,
     private val storage: FirebaseStorage,
 ) : TravelRepository {
+    fun userId(): String? {
+        return authRepository.getUser()?.uid
+    }
+
     override suspend fun getExplorePage(page: Int): Page<Travel> {
         val collection = db.collection(COLLECTION_KEY)
         val response = collection.limit(30).get().await()
-        val travels = response.toObjects(NetworkTravel::class.java)
+        val travels = response
+            .toObjects(NetworkTravel::class.java)
+            .map { it.toDomain(it.userId == userId()) }
+
         return Page(data = travels, isLastPage = true)
     }
 
     override suspend fun getUserPage(page: Int): Page<Travel> {
-        TODO("Not yet implemented")
+        val collection = db.collection(COLLECTION_KEY)
+        val response = collection.limit(30).get().await()
+        val travels = response
+            .toObjects(NetworkTravel::class.java)
+            .map { it.toDomain(true) }
+
+        return Page(data = travels, isLastPage = true)
     }
 
     override suspend fun get(id: String): Travel {
         val collection = db.collection(COLLECTION_KEY)
         val response = collection.document(id).get().await()
-        return response.toObject(NetworkTravel::class.java)!!
+        return response
+            .toObject(NetworkTravel::class.java)!!
+            .let { it.toDomain(it.userId == userId()) }
     }
 
     override suspend fun create(dto: TravelDto) {
@@ -38,18 +54,12 @@ class FirebaseTravelRepository(
         val collection = db.collection(COLLECTION_KEY)
         val storage = storage.reference
 
-        val uploadedPhotos = dto.photos.map {
-            val path = "images/${userId}/${System.currentTimeMillis()}.jpg"
-            val imageRef = storage.child(path)
+        val path = "images/${userId}/${System.currentTimeMillis()}.jpg"
+        val imageRef = storage.child(path)
+        imageRef.putFile(dto.photoUri).await()
+        val remoteUri = imageRef.downloadUrl.await()
 
-            imageRef.putFile(it.uri).await()
-
-            val uri = imageRef.downloadUrl.await()
-
-            it.copy(remoteUri = uri)
-        }
-
-        val patchedDto = dto.copy(photos = uploadedPhotos)
+        val patchedDto = dto.copy(photoUri = remoteUri)
         collection.add(patchedDto).await()
     }
 

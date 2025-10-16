@@ -1,4 +1,4 @@
-package com.example.travelbuddy.ui.screens.traveldetails.components
+package com.example.travelbuddy.ui.screens.travelform.components
 
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,31 +18,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TravelPhotoBox(photo: Uri?, description: String?, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+fun PhotoField(
+    value: Uri?,
+    onValueChange: (Uri?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+    ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .padding(4.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(
                     MaterialTheme.colorScheme.surfaceContainer
                 )
         ) {
-            Text(photo?.toString() ?: "XD")
-        }
-        description?.let {
-            Text(
-                "\"$it\"",
-                modifier = Modifier
-                    .padding(4.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
+            TextButton({}) {
+                Text("Wybierz zdjęcie")
+            }
         }
     }
+
 }
