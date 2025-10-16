@@ -11,7 +11,7 @@ interface TravelRepository {
 
     suspend fun get(id: String): Travel
 
-    suspend fun create(dto: TravelDto)
+    suspend fun create(dto: TravelDto): String
 
     suspend fun update(id: String, dto: TravelDto)
 

@@ -69,7 +69,12 @@ fun NavigationRoot(
             is TravelFormRoute -> {
                 NavEntry(key) {
                     TravelFormScreen(
-                        popToPreviousScreen = backStack::removeLastOrNull,
+                        popToPreviousScreen = { createdId ->
+                            backStack.removeLastOrNull()
+                            if (createdId != null) {
+                                backStack.add(TravelDetailsRoute(createdId))
+                            }
+                        },
                     )
                 }
             }

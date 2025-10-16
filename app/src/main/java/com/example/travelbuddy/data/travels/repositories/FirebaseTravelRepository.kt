@@ -1,5 +1,6 @@
 package com.example.travelbuddy.data.travels.repositories
 
+import androidx.core.net.toUri
 import com.example.travelbuddy.core.models.Page
 import com.example.travelbuddy.data.auth.repositories.AuthRepository
 import com.example.travelbuddy.data.travels.mappers.toDomain
@@ -47,20 +48,22 @@ class FirebaseTravelRepository(
             .let { it.toDomain(it.userId == userId()) }
     }
 
-    override suspend fun create(dto: TravelDto) {
+    override suspend fun create(dto: TravelDto): String {
         val userId = authRepository.getUser()?.uid
         if (userId == null) throw Exception()
 
         val collection = db.collection(COLLECTION_KEY)
         val storage = storage.reference
 
-        val path = "images/${userId}/${System.currentTimeMillis()}.jpg"
-        val imageRef = storage.child(path)
-        imageRef.putFile(dto.photoUri).await()
+        val localUri = dto.photoUri.toUri()
+        val remotePath = "images/${userId}/${System.currentTimeMillis()}.jpg"
+        val imageRef = storage.child(remotePath)
+        imageRef.putFile(localUri).await()
         val remoteUri = imageRef.downloadUrl.await()
 
-        val patchedDto = dto.copy(photoUri = remoteUri)
-        collection.add(patchedDto).await()
+        val patchedDto = dto.copy(photoUri = remoteUri.toString())
+        val result = collection.add(patchedDto).await()
+        return result.id
     }
 
     override suspend fun update(id: String, dto: TravelDto) {
