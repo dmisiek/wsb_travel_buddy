@@ -50,7 +50,6 @@ class TravelFormViewModel(
             description = state.description,
             photoUri = state.photo!!.toString(),
             isPublic = state.isPublic,
-            createdAt = Timestamp.now(),
         )
 
         viewModelScope.launch {

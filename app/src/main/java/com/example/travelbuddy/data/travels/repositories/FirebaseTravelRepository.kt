@@ -4,9 +4,11 @@ import androidx.core.net.toUri
 import com.example.travelbuddy.core.models.Page
 import com.example.travelbuddy.data.auth.repositories.AuthRepository
 import com.example.travelbuddy.data.travels.mappers.toDomain
+import com.example.travelbuddy.data.travels.mappers.toNetwork
 import com.example.travelbuddy.data.travels.models.NetworkTravel
 import com.example.travelbuddy.domain.travels.dto.TravelDto
 import com.example.travelbuddy.domain.travels.models.Travel
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
@@ -49,7 +51,7 @@ class FirebaseTravelRepository(
     }
 
     override suspend fun create(dto: TravelDto): String {
-        val userId = authRepository.getUser()?.uid
+        val userId = userId()
         if (userId == null) throw Exception()
 
         val collection = db.collection(COLLECTION_KEY)
@@ -61,13 +63,13 @@ class FirebaseTravelRepository(
         imageRef.putFile(localUri).await()
         val remoteUri = imageRef.downloadUrl.await()
 
-        val patchedDto = dto.copy(photoUri = remoteUri.toString())
-        val result = collection.add(patchedDto).await()
+        val networkTravel = dto.toNetwork(
+            photoUri = remoteUri.toString(),
+            userId = userId,
+            createdAt = Timestamp.now()
+        )
+        val result = collection.add(networkTravel).await()
         return result.id
-    }
-
-    override suspend fun update(id: String, dto: TravelDto) {
-        TODO("Not yet implemented")
     }
 
     override suspend fun delete(id: String) {

@@ -53,15 +53,6 @@ fun TravelFormScreen(
                         popToPreviousScreen(it.id)
                     }
 
-                    is FormResult.Updated -> {
-                        snackbarHostState.showSnackbar(
-                            message = "Podróż została zaktualizowana!",
-                            actionLabel = "OK",
-                            duration = SnackbarDuration.Short
-                        )
-                        popToPreviousScreen(null)
-                    }
-
                     is FormResult.Error -> {
                         snackbarHostState.showSnackbar(
                             message = "Wystąpił problem przy dodawaniu podróży. Prosimy spróbować ponownie.",
