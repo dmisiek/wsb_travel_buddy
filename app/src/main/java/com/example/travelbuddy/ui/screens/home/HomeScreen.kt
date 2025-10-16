@@ -5,7 +5,10 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +20,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.RocketLaunch
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -30,10 +35,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -127,69 +134,110 @@ fun HomeScreen(
                         Icon(Icons.Filled.Add, contentDescription = null)
                     }
                 }
-                if (user != null)
-                    FloatingActionButton(pushToFormScreen) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Dodaj podróż",
-                        )
-                    }
+                if (user != null) FloatingActionButton(pushToFormScreen) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "Dodaj podróż",
+                    )
+                }
             },
         ) { padding ->
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                contentPadding = padding,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+            PullToRefreshBox(
+                isRefreshing = state.loadState == LoadState.RefreshLoading,
+                onRefresh = viewModel::fetchTravels,
+                modifier = Modifier.padding(padding)
             ) {
-
-                if (user != null) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Text(
-                            "Moje podróże",
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier
-                                .padding(16.dp, 8.dp)
-                                .padding(top = 24.dp)
-                        )
+                if (state.isPending()) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        CircularProgressIndicator()
                     }
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
 
-                    items(state.userTravels) { travel ->
-                        TravelCell(
-                            travel,
-                            modifier = Modifier
-                                .clickable(onClick = { pushToDetailsScreen(travel.id) }),
-                        )
-                    }
+                        if (user != null) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                Text(
+                                    "Moje podróże",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier
+                                        .padding(16.dp, 8.dp)
+                                        .padding(top = 24.dp)
+                                )
+                            }
 
-                    if (state.userTravels.isNotEmpty())
-                        item {
-                            ButtonCell(
-                                onClick = {},
-                                icon = Icons.Default.MoreHoriz,
+                            if (state.userTravels.isNotEmpty()) {
+                                items(state.userTravels) { travel ->
+                                    TravelCell(
+                                        travel,
+                                        modifier = Modifier.clickable(onClick = {
+                                                pushToDetailsScreen(travel.id)
+                                            }),
+                                    )
+                                }
+                            } else {
+                                item(span = { GridItemSpan(maxLineSpan) }) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Icon(
+                                            Icons.Outlined.RocketLaunch,
+                                            contentDescription = "Empty",
+                                            tint = MaterialTheme.colorScheme.outlineVariant,
+                                            modifier = Modifier.padding(16.dp),
+                                        )
+                                        Text(
+                                            "Nie dodałeś jeszcze żadnej podróży",
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
+                                }
+                            }
+
+
+                            if (state.userTravels.isNotEmpty()) item {
+                                ButtonCell(
+                                    onClick = {},
+                                    icon = Icons.Default.MoreHoriz,
+                                )
+                            }
+                        }
+
+
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Text(
+                                "Odkrywaj",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier
+                                    .padding(16.dp, 8.dp)
+                                    .padding(top = if (user != null) 48.dp else 0.dp)
                             )
                         }
-                }
 
-
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(
-                        "Odkrywaj",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .padding(16.dp, 8.dp)
-                            .padding(top = if (user != null) 48.dp else 0.dp)
-                    )
-                }
-
-                items(state.exploreTravels) { travel ->
-                    TravelCell(
-                        travel,
-                        modifier = Modifier
-                            .clickable(onClick = { pushToDetailsScreen(travel.id) }),
-                    )
+                        items(state.exploreTravels) { travel ->
+                            TravelCell(
+                                travel,
+                                modifier = Modifier.clickable(onClick = { pushToDetailsScreen(travel.id) }),
+                            )
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+
+private fun HomeState.isPending(): Boolean {
+    return loadState == LoadState.InitialLoading || loadState == LoadState.RefreshLoading
 }

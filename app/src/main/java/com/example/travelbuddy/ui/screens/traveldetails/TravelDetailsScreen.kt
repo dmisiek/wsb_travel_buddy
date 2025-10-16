@@ -1,8 +1,14 @@
 package com.example.travelbuddy.ui.screens.traveldetails
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -31,6 +37,16 @@ fun TravelDetailsScreen(
                 title = {
                     Text(state.resource?.name ?: "Szczegóły podróży")
                 },
+                actions = {
+                    if (state.resource?.belongsToAuthedUser == true) {
+                        IconButton(viewModel::delete) {
+                            Icon(
+                                Icons.Outlined.Delete,
+                                contentDescription = "Delete",
+                            )
+                        }
+                    }
+                }
             )
         }) { padding ->
         Column(
@@ -38,6 +54,7 @@ fun TravelDetailsScreen(
                 .padding(padding)
                 .padding(horizontal = 2.dp),
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
             TravelPhotoBox(
                 photo = state.resource?.photoUri,
                 description = state.resource?.description,

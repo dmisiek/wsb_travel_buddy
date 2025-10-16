@@ -2,7 +2,6 @@ package com.example.travelbuddy.ui.screens.traveldetails.components
 
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,27 +10,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 
 @Composable
 fun TravelPhotoBox(photo: Uri?, description: String?, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        Box(
-            contentAlignment = Alignment.Center,
+        AsyncImage(
+            model = photo,
+            contentDescription = "Remote image",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .padding(4.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(
-                    MaterialTheme.colorScheme.surfaceContainer
-                )
-        ) {
-            Text(photo?.toString() ?: "XD")
-        }
+        )
         description?.let {
             Text(
                 "\"$it\"",

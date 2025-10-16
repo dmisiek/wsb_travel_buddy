@@ -27,4 +27,10 @@ class TravelDetailsViewModel(
             _state.update { it.copy(resource = data) }
         }
     }
+
+    fun delete() {
+        viewModelScope.launch {
+            // todo
+        }
+    }
 }

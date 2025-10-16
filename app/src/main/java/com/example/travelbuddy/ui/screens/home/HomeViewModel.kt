@@ -17,7 +17,10 @@ import kotlinx.coroutines.launch
 data class HomeState(
     val exploreTravels: List<Travel> = emptyList(),
     val userTravels: List<Travel> = emptyList(),
+    val loadState: LoadState = LoadState.InitialLoading,
 )
+
+enum class LoadState { InitialLoading, Loaded, RefreshLoading }
 
 class HomeViewModel(
     private val authRepository: AuthRepository,
@@ -34,13 +37,25 @@ class HomeViewModel(
         )
 
     init {
-        viewModelScope.launch {
-            try {
-                val travelsPage = travelRepository.getExplorePage(1)
+        fetchTravels()
+    }
 
-                _state.update { it.copy(exploreTravels = travelsPage.data) }
+    fun fetchTravels() {
+        viewModelScope.launch {
+
+            _state.update {
+                val nextPending =
+                    if (it.loadState == LoadState.Loaded) LoadState.RefreshLoading else LoadState.InitialLoading
+                it.copy(loadState = nextPending)
+            }
+
+            try {
+                val page = travelRepository.getExplorePage(1)
+                _state.update {
+                    it.copy(exploreTravels = page.data, loadState = LoadState.Loaded)
+                }
             } catch (e: Exception) {
-                print(e) // todo handle
+                e.printStackTrace()
             }
         }
     }
@@ -51,7 +66,7 @@ class HomeViewModel(
                 authRepository.logout()
                 _state.update { it.copy(userTravels = emptyList()) }
             } catch (e: Exception) {
-                print(e) // todo handle
+                e.printStackTrace()
             }
         }
     }
