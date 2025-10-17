@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 data class HomeState(
     val exploreTravels: List<Travel> = emptyList(),
     val userTravels: List<Travel> = emptyList(),
+    val areAllUserPhotosLoaded: Boolean = false,
     val loadState: LoadState = LoadState.InitialLoading,
 )
 
@@ -50,9 +51,16 @@ class HomeViewModel(
             }
 
             try {
-                val page = travelRepository.getExplorePage(1)
+                val explorePage = travelRepository.getExplorePage(1)
+                val userPage = travelRepository.getUserPage(1)
+
                 _state.update {
-                    it.copy(exploreTravels = page.data, loadState = LoadState.Loaded)
+                    it.copy(
+                        exploreTravels = explorePage.data,
+                        userTravels = userPage.data,
+                        areAllUserPhotosLoaded = userPage.isLastPage,
+                        loadState = LoadState.Loaded,
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -64,7 +72,7 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 authRepository.logout()
-                _state.update { it.copy(userTravels = emptyList()) }
+                fetchTravels()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

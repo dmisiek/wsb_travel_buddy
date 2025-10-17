@@ -27,29 +27,37 @@ class FirebaseTravelRepository(
 
     override suspend fun getExplorePage(page: Int): Page<Travel> {
         val collection = db.collection(COLLECTION_KEY)
-        val response = collection.limit(30).get().await()
-        val travels = response
-            .toObjects(NetworkTravel::class.java)
-            .map { it.toDomain(it.userId == userId()) }
+        val query =
+            if (userId() != null) collection.whereNotEqualTo("userId", userId())
+            else collection
 
-        return Page(data = travels, isLastPage = true)
-    }
-
-    override suspend fun getUserPage(page: Int): Page<Travel> {
-        val collection = db.collection(COLLECTION_KEY)
-        val response = collection.limit(30).get().await()
+        val response = query.get().await()
         val travels = response
             .toObjects(NetworkTravel::class.java)
             .map { it.toDomain(true) }
 
-        return Page(data = travels, isLastPage = true)
+        return Page(data = travels, isLastPage = travels.count() < PAGE_SIZE)
+    }
+
+
+    override suspend fun getUserPage(page: Int): Page<Travel> {
+        val collection = db.collection(COLLECTION_KEY)
+        val query =
+            if (userId() != null) collection.whereEqualTo("userId", userId())
+            else collection
+
+        val response = query.get().await()
+        val travels = response
+            .toObjects(NetworkTravel::class.java)
+            .map { it.toDomain(true) }
+
+        return Page(data = travels, isLastPage = travels.count() < PAGE_SIZE)
     }
 
     override suspend fun get(id: String): Travel {
         val collection = db.collection(COLLECTION_KEY)
         val response = collection.document(id).get().await()
-        return response
-            .toObject(NetworkTravel::class.java)!!
+        return response.toObject(NetworkTravel::class.java)!!
             .let { it.toDomain(it.userId == userId()) }
     }
 
@@ -67,9 +75,7 @@ class FirebaseTravelRepository(
         val remoteUri = imageRef.downloadUrl.await()
 
         val networkTravel = dto.toNetwork(
-            photoUri = remoteUri.toString(),
-            userId = userId,
-            createdAt = Timestamp.now()
+            photoUri = remoteUri.toString(), userId = userId, createdAt = Timestamp.now()
         )
         val result = collection.add(networkTravel).await()
         return result.id
@@ -110,5 +116,6 @@ class FirebaseTravelRepository(
 
     companion object {
         const val COLLECTION_KEY: String = "travels"
+        const val PAGE_SIZE: Int = 30
     }
 }
