@@ -1,6 +1,8 @@
 package com.example.travelbuddy.ui.screens.travelform
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,11 +47,6 @@ fun TravelFormScreen(
             state.result?.let {
                 when (it) {
                     is FormResult.Created -> {
-                        snackbarHostState.showSnackbar(
-                            message = "Podróż została dodana!",
-                            actionLabel = "OK",
-                            duration = SnackbarDuration.Short
-                        )
                         popToPreviousScreen(it.id)
                     }
 
@@ -104,7 +101,12 @@ fun TravelFormScreen(
             )
             Spacer(modifier = Modifier.height(64.dp))
             if (state.isPending) {
-                CircularProgressIndicator()
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    CircularProgressIndicator()
+                }
             } else {
                 Button(
                     onClick = viewModel::submit,

@@ -12,7 +12,10 @@ import kotlinx.coroutines.launch
 
 data class TravelDetailsState(
     val resource: Travel? = null,
+    val deleteState: DeleteState = DeleteState.INITIAL,
 )
+
+enum class DeleteState { INITIAL, PENDING, DONE, ERROR }
 
 class TravelDetailsViewModel(
     private val travelsRepository: TravelRepository,
@@ -30,7 +33,15 @@ class TravelDetailsViewModel(
 
     fun delete() {
         viewModelScope.launch {
-            // todo
+            _state.update { it.copy(deleteState = DeleteState.PENDING) }
+
+            try {
+                travelsRepository.delete(resourceId)
+                _state.update { it.copy(deleteState = DeleteState.DONE) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _state.update { it.copy(deleteState = DeleteState.ERROR) }
+            }
         }
     }
 }

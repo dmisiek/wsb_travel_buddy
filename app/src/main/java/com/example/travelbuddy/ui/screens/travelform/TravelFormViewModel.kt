@@ -6,13 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.travelbuddy.data.travels.repositories.TravelRepository
 import com.example.travelbuddy.domain.travels.dto.TravelDto
 import com.example.travelbuddy.ui.screens.travelform.models.FormResult
-import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.String
 
 data class TravelFormState(
     val name: String = "",

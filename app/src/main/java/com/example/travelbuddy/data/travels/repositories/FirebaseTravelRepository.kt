@@ -1,5 +1,6 @@
 package com.example.travelbuddy.data.travels.repositories
 
+import android.net.Uri
 import androidx.core.net.toUri
 import com.example.travelbuddy.core.models.Page
 import com.example.travelbuddy.data.auth.repositories.AuthRepository
@@ -12,6 +13,8 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class FirebaseTravelRepository(
     private val authRepository: AuthRepository,
@@ -73,7 +76,36 @@ class FirebaseTravelRepository(
     }
 
     override suspend fun delete(id: String) {
-        TODO("Not yet implemented")
+        val collection = db.collection(COLLECTION_KEY)
+        val storage = storage.reference
+
+        val imagePath = getStorageRelativePath(get(id).photoUri)
+        if (imagePath != null) {
+            val imageRef = storage.child(imagePath)
+            imageRef.delete().await()
+        }
+
+        collection.document(id).delete().await()
+    }
+
+    fun getStorageRelativePath(uri: Uri): String? {
+        val uriString = uri.toString()
+
+        val startSegment = "/o/"
+        val startIndex = uriString.indexOf(startSegment)
+
+        if (startIndex == -1) return null
+
+        val pathStart = startIndex + startSegment.length
+        val pathEnd = uriString.indexOf('?', pathStart)
+
+        val encodedPath = if (pathEnd != -1) {
+            uriString.substring(pathStart, pathEnd)
+        } else {
+            uriString.substring(pathStart)
+        }
+
+        return URLDecoder.decode(encodedPath, StandardCharsets.UTF_8.toString())
     }
 
     companion object {
