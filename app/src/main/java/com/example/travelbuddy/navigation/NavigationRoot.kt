@@ -2,10 +2,12 @@ package com.example.travelbuddy.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavEntry
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.example.travelbuddy.ui.screens.home.HomeScreen
 import com.example.travelbuddy.ui.screens.login.LoginScreen
 import com.example.travelbuddy.ui.screens.register.RegisterScreen
@@ -23,7 +25,9 @@ fun NavigationRoot(
     NavDisplay(
         backStack = backStack,
         entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberSavedStateNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+            rememberSceneSetupNavEntryDecorator()
         ),
         modifier = modifier
     ) { key ->
