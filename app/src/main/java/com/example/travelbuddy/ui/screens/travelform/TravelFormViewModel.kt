@@ -31,12 +31,16 @@ class TravelFormViewModel(
         _state.update { it.copy(name = value) }
     }
 
-    fun descriptionChanged(value: String) {
-        _state.update { it.copy(description = value) }
+    fun publicChanged(value: Boolean) {
+        _state.update { it.copy(isPublic = value) }
     }
 
     fun photoChanged(value: Uri?) {
         _state.update { it.copy(photo = value) }
+    }
+
+    fun descriptionChanged(value: String) {
+        _state.update { it.copy(description = value) }
     }
 
     fun submit() {

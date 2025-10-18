@@ -8,7 +8,7 @@ data class NetworkTravel(
     val name: String = "",
     val description: String? = null,
     val photoUri: String = "",
-    val isPublic: Boolean = true,
+    val public: Boolean = true,
     val userId: String = "",
     val createdAt: Timestamp = Timestamp.now(),
 )

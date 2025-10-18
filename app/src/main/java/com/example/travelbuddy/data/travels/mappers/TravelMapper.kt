@@ -13,7 +13,7 @@ fun NetworkTravel.toDomain(belongsToAuthedUser: Boolean): Travel {
         name = name,
         description = description,
         photoUri = photoUri.toUri(),
-        isPublic = isPublic,
+        isPublic = public,
         belongsToAuthedUser = belongsToAuthedUser,
         createdAt = createdAt,
     )
@@ -28,7 +28,7 @@ fun TravelDto.toNetwork(
         name = name,
         description = description,
         photoUri = photoUri,
-        isPublic = isPublic,
+        public = isPublic,
         userId = userId,
         createdAt = createdAt,
     )

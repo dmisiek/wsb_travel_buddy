@@ -27,9 +27,10 @@ class FirebaseTravelRepository(
 
     override suspend fun getExplorePage(page: Int): Page<Travel> {
         val collection = db.collection(COLLECTION_KEY)
-        val query =
-            if (userId() != null) collection.whereNotEqualTo("userId", userId())
-            else collection
+        var query = collection.whereEqualTo("public", true)
+        if (userId() != null) {
+            query = query.whereNotEqualTo("userId", userId())
+        }
 
         val response = query.get().await()
         val travels = response

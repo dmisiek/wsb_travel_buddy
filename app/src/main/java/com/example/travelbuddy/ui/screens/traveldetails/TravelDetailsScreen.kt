@@ -111,7 +111,7 @@ fun TravelDetailsScreen(
                     if (it.isNotBlank()) "\"$it\"" else "Nie dodano opisu",
                     style =
                         if (it.isNotBlank()) MaterialTheme.typography.bodyMedium
-                        else MaterialTheme.typography.labelMedium,
+                        else MaterialTheme.typography.labelLarge,
                     color =
                         if (it.isNotBlank()) MaterialTheme.colorScheme.onSurface
                         else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -120,7 +120,7 @@ fun TravelDetailsScreen(
                         .clip(RoundedCornerShape(24.dp))
                         .background(MaterialTheme.colorScheme.surfaceContainerLow)
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(20.dp)
                 )
             }
         }

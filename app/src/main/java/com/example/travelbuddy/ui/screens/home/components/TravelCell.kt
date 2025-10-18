@@ -2,11 +2,16 @@ package com.example.travelbuddy.ui.screens.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,12 +58,26 @@ fun TravelCell(
                     )
                 )
         )
-        Text(
-            travel.name,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.labelLarge,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(12.dp),
-        )
+        ) {
+            Text(
+                travel.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelLarge,
+            )
+            if (!travel.isPublic) {
+                Icon(
+                    Icons.Outlined.VisibilityOff,
+                    contentDescription = "Not public",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .padding(start = 8.dp),
+                )
+            }
+        }
     }
 }
