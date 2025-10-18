@@ -1,7 +1,9 @@
 package com.example.travelbuddy.ui.screens.traveldetails
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,9 +32,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -95,7 +101,34 @@ fun TravelDetailsScreen(
                 .padding(padding)
                 .padding(horizontal = 2.dp),
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            state.resource?.let {
+                if (it.belongsToAuthedUser) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                    ) {
+                        Icon(
+                            if (it.isPublic) Icons.Outlined.Visibility
+                            else Icons.Outlined.VisibilityOff,
+                            contentDescription = "Public state",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp),
+                        )
+                        Text(
+                            if (it.isPublic) "Zasób widoczny publicznie"
+                            else "Zasób prywatny",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
             AsyncImage(
                 model = state.resource?.photoUri,
                 contentDescription = "Remote image",

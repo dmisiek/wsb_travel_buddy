@@ -1,5 +1,6 @@
 package com.example.travelbuddy.ui.screens.travelform
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.travelbuddy.ui.common.BackButton
@@ -72,10 +74,12 @@ fun TravelFormScreen(
             })
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        modifier = Modifier.clickable(onClick = LocalFocusManager.current::clearFocus),
     ) { padding ->
         LazyColumn (
             contentPadding = padding,
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp)
+
         ) {
             item {
                 Spacer(modifier = Modifier.height(16.dp))
