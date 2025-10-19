@@ -4,6 +4,10 @@ A simple application where you can save your travel memories and inspire others 
 
 The app was created as a credit for a college course.
 
+![compass app home](./images/home_logged_in.png)
+![compass app details](./images/travel_details_logged_in.png)
+![compass app form](./images/travel_form_filled.png)
+
 ## Firebase setup
 Mobile app uses some Firebase services: Authentication, FirestoreDB & Storage.
 To ensure the proper functioning of the app, make sure you will enabled all these in yours Firebase Project.
